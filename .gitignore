@@ -1,0 +1,67 @@
+# 依赖目录
+node_modules/
+
+# 环境配置
+.env
+.env.local
+.env.*.local
+
+# 日志文件
+*.log
+bridge.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 操作系统文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+__MACOSX/
+
+# 编辑器临时文件
+*.swp
+*.swo
+*~
+.#*
+\#*#
+.*.sw[a-z]
+*.un~
+Session.vim
+Sessionx.vim
+
+# Rust 编译输出
+target/
+Cargo.lock
+
+# IDE 配置
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# 测试覆盖率
+coverage/
+.nyc_output/
+
+# 临时文件
+*.tmp
+*.temp
+.cache/
+
+# 构建输出
+dist/
+build/
+*.tgz
+
+# 系统临时文件
+/tmp/
+tmp/
+
+# Claude Code 本地配置
+.claude/
+*.local.json

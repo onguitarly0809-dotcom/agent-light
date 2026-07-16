@@ -1,0 +1,56 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node C:/Users/USER/Downloads/agent-light-main/hook-client.mjs thinking"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node C:/Users/USER/Downloads/agent-light-main/hook-client.mjs running"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node C:/Users/USER/Downloads/agent-light-main/lib/post-tool.mjs"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node C:/Users/USER/Downloads/agent-light-main/lib/notification.mjs"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node C:/Users/USER/Downloads/agent-light-main/hook-client.mjs idle"
+          }
+        ]
+      }
+    ]
+  }
+}

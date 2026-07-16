@@ -1,0 +1,14 @@
+{
+  "name": "claude-light",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "bridge": "node serial-bridge.mjs",
+    "light": "node hook-client.mjs",
+    "control": "node control.mjs"
+  },
+  "dependencies": {
+    "serialport": "^12.0.0"
+  }
+}
