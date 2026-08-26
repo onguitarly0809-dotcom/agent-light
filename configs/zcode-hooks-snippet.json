@@ -1,0 +1,86 @@
+{
+  "hooks": {
+    "enabled": true,
+    "events": {
+      "SessionStart": [
+        {
+          "hooks": [
+            {
+              "type": "command",
+              "command": "node E:/agent-light-main/hook-client.mjs idle zcode",
+              "timeout": 5
+            }
+          ]
+        }
+      ],
+      "UserPromptSubmit": [
+        {
+          "hooks": [
+            {
+              "type": "command",
+              "command": "node E:/agent-light-main/hook-client.mjs thinking zcode",
+              "timeout": 5
+            }
+          ]
+        }
+      ],
+      "PreToolUse": [
+        {
+          "matcher": "Bash|Read|Write|Edit|WebSearch|WebFetch|Agent|Skill|AskUserQuestion|EnterPlanMode|ExitPlanMode",
+          "hooks": [
+            {
+              "type": "command",
+              "command": "node E:/agent-light-main/hook-client.mjs running zcode",
+              "timeout": 5
+            }
+          ]
+        }
+      ],
+      "PostToolUse": [
+        {
+          "hooks": [
+            {
+              "type": "command",
+              "command": "node E:/agent-light-main/lib/post-tool.mjs",
+              "timeout": 5
+            }
+          ]
+        }
+      ],
+      "PermissionRequest": [
+        {
+          "hooks": [
+            {
+              "type": "command",
+              "command": "node E:/agent-light-main/hook-client.mjs alarm zcode",
+              "timeout": 5
+            }
+          ]
+        }
+      ],
+      "Stop": [
+        {
+          "hooks": [
+            {
+              "type": "command",
+              "command": "node E:/agent-light-main/hook-client.mjs idle zcode",
+              "timeout": 5
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "_usage_instructions": {
+    "title": "ZCode Hooks配置说明",
+    "description": "将此配置添加到 ~/.zcode/cli/config.json 文件中",
+    "steps": [
+      "1. 打开或创建 ~/.zcode/cli/config.json 文件",
+      "2. 将此hooks配置合并到config.json中",
+      "3. 确保路径 E:/agent-light-main/ 根据实际安装位置调整",
+      "4. 重启ZCode使配置生效",
+      "5. 运行 'tail -f agent-light-activity.log' 监控ZCode hook活动"
+    ],
+    "note": "此配置与Claude Code和Codex配置完全独立，不会相互影响"
+  }
+}

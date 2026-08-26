@@ -36,12 +36,33 @@ console.log(`Listening on 127.0.0.1:${options.listen}`);
 // 原生 USB CDC 的板子无此问题，延迟只是多等一会。
 setTimeout(() => sendCommand(options.initial), 1500);
 
+// zombie 修复：串口断开（拔插/重枚举）时若只设 exitCode 不退出，进程会保持
+// 假死（TCP 活着、串口死了），由 bridge-autostart.bat 托管的重启循环永远不触发。
+// 这里改为直接退出，交给重启循环重连。shuttingDown 避免正常关闭流程被误杀。
+let shuttingDown = false;
+
 serial.on('error', (error) => {
   console.error(`Serial error: ${error.message}`);
-  process.exitCode = 1;
+  if (!shuttingDown) {
+    console.error('Serial error is fatal (restart loop will reconnect); exiting.');
+    process.exit(1);
+  }
+});
+
+serial.on('close', (err) => {
+  if (shuttingDown) return;
+  const reason = err?.disconnected ? 'disconnected' : 'closed';
+  console.error(`Serial port ${reason}; exiting for reconnect.`);
+  process.exit(1);
 });
 
 server.listen(options.listen, '127.0.0.1');
+
+// 兜底：重复桥导致 EADDRINUSE 时干净退出，让重启循环等端口释放后重连。
+server.on('error', (error) => {
+  console.error(`Server error: ${error.message}`);
+  if (!shuttingDown) process.exit(1);
+});
 
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
@@ -89,6 +110,7 @@ function updateWatchdog(command) {
 }
 
 function shutdown() {
+  shuttingDown = true;
   if (watchdogTimer) clearTimeout(watchdogTimer);
   sendCommand('idle');
   server.close();

@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node C:/Users/USER/Downloads/agent-light-main/hook-client.mjs thinking"
+            "command": "node E:/agent-light-main/hook-client.mjs thinking"
           }
         ]
       }
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node C:/Users/USER/Downloads/agent-light-main/hook-client.mjs running"
+            "command": "node E:/agent-light-main/hook-client.mjs running"
           }
         ]
       }
@@ -27,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node C:/Users/USER/Downloads/agent-light-main/lib/post-tool.mjs"
+            "command": "node E:/agent-light-main/lib/post-tool.mjs"
           }
         ]
       }
@@ -37,7 +37,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node C:/Users/USER/Downloads/agent-light-main/lib/notification.mjs"
+            "command": "node E:/agent-light-main/lib/notification.mjs"
           }
         ]
       }
@@ -47,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node C:/Users/USER/Downloads/agent-light-main/hook-client.mjs idle"
+            "command": "node E:/agent-light-main/hook-client.mjs idle"
           }
         ]
       }

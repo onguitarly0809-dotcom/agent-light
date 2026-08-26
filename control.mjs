@@ -61,6 +61,18 @@ function bridgePids() {
     .filter((n) => Number.isInteger(n) && n > 0);
 }
 
+// 自启重启循环 cmd 进程 PID（cmd.exe 运行 bridge-autostart.bat）。
+// 桥在自启循环托管下即使 node 暂死，循环也活着——start 需据此防重复、stop 需一并杀掉。
+function autostartLoopPids() {
+  const out = ps(
+    `Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'cmd.exe' -and $_.CommandLine -like '*bridge-autostart.bat*' } | Select-Object -ExpandProperty ProcessId`,
+  );
+  return out
+    .split(/\r?\n/)
+    .map((s) => Number(s.trim()))
+    .filter((n) => Number.isInteger(n) && n > 0);
+}
+
 // 端口 8765 是否监听，返回 { listening, pid }
 function portStatus() {
   let out;
@@ -133,12 +145,16 @@ function sendCommand(rawCommand) {
 
 async function gatherStatus() {
   const pids = bridgePids();
+  const loop = autostartLoopPids();
   const port = portStatus();
   const ports = await listPorts();
   const esp = esp32Port(ports);
   return {
     bridgeRunning: pids.length > 0,
     bridgePids: pids,
+    autostartLoop: loop.length > 0,
+    autostartLoopPids: loop,
+    autostartEnabled: fs.existsSync(STARTUP_VBS),
     portListening: port.listening,
     portPid: port.pid,
     ports,
@@ -156,7 +172,10 @@ function fmtStatus(s) {
     : s.ports.length > 0
       ? `${s.ports.map((p) => p.path).join(', ')}（未识别为 ESP32）`
       : '未检测到串口';
-  return { bridge, port, hw };
+  const autostart = s.autostartEnabled
+    ? (s.autostartLoop ? '已开启（循环运行中）' : '已开启（循环未运行）')
+    : '已关闭';
+  return { bridge, port, hw, autostart };
 }
 
 // ---------- 菜单动作 ----------
@@ -164,6 +183,16 @@ function fmtStatus(s) {
 async function startBridge() {
   if (portStatus().listening) {
     console.log('桥已在运行，无需重复启动。');
+    return;
+  }
+  const bpids = bridgePids();
+  if (bpids.length > 0) {
+    console.log(`⚠ 已有桥进程在运行（PID ${bpids.join(',')}）但端口未监听，正在启动或串口异常。请先菜单 2 停止再试。`);
+    return;
+  }
+  if (autostartLoopPids().length > 0) {
+    console.log('⚠ 开机自启重启循环（bridge-autostart.bat）正在运行，桥由它托管。');
+    console.log('  如需手动接管：先菜单 2 停止（会停掉自启循环），再按 1 启动。');
     return;
   }
   const ports = await listPorts();
@@ -210,19 +239,27 @@ async function startBridge() {
 
 async function stopBridge() {
   const before = bridgePids();
-  if (before.length === 0) {
+  const loopBefore = autostartLoopPids();
+  if (before.length === 0 && loopBefore.length === 0) {
     console.log('桥未在运行。');
     return;
   }
   ps(
-    `$t = @(Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -like '*serial-bridge.mjs*' }); foreach ($p in $t) { Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue }; Write-Output ('killed=' + $t.Count)`,
+    `$t = @(Get-CimInstance Win32_Process | Where-Object { ($_.Name -eq 'node.exe' -and $_.CommandLine -like '*serial-bridge.mjs*') -or ($_.Name -eq 'cmd.exe' -and $_.CommandLine -like '*bridge-autostart.bat*') }); foreach ($p in $t) { Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue }; Write-Output ('killed=' + $t.Count)`,
   );
   await sleep(800);
   const after = bridgePids();
-  if (after.length === 0) {
-    console.log(`✔ 已停止桥（PID ${before.join(',')}）。`);
+  const loopAfter = autostartLoopPids();
+  const parts = [];
+  if (after.length > 0) parts.push(`桥进程残留 PID ${after.join(',')}`);
+  if (loopAfter.length > 0) parts.push(`自启循环残留 PID ${loopAfter.join(',')}`);
+  if (parts.length === 0) {
+    const killed = [];
+    if (before.length) killed.push(`桥 PID ${before.join(',')}`);
+    if (loopBefore.length) killed.push('自启循环');
+    console.log(`✔ 已停止（${killed.join('、')}）。`);
   } else {
-    console.log(`⚠ 仍有进程残留：PID ${after.join(',')}，可能需要手动结束。`);
+    console.log(`⚠ 仍有进程残留：${parts.join('；')}，可能需要手动结束。`);
   }
 }
 
@@ -280,6 +317,7 @@ async function diagnose() {
   // 2. 桥进程
   console.log('\n[2] 桥进程：');
   if (s.bridgeRunning) console.log(`  ✔ 运行中 (PID ${s.bridgePids.join(',')})`);
+  else if (s.autostartLoop) console.log(`  — 未运行，但自启重启循环运行中（PID ${s.autostartLoopPids.join(',')}），桥崩溃会自动重起。`);
   else console.log('  ✖ 未运行。→ 主菜单按 1 启动桥。');
 
   // 3. 端口
@@ -322,7 +360,7 @@ async function autostartManage() {
     console.log('\n--- 开机自启管理 ---');
     console.log(`  当前：${exists ? '已开启（启动文件夹有 VBS）' : '已关闭'}`);
     console.log('  1) 关闭开机自启（删除 VBS）');
-    console.log('  2) 开启开机自启（不推荐：硬件未插好时启动会失败）');
+    console.log('  2) 开启开机自启（推荐：桥带重启循环，硬件未就绪会自动重试）');
     console.log('  0) 返回');
     const c = (await ask('选择: ')).trim();
     if (c === '0') return;
@@ -339,7 +377,7 @@ async function autostartManage() {
         const vbs = autostartVbsContent();
         fs.writeFileSync(STARTUP_VBS, vbs, 'utf8');
         console.log('✔ 已开启开机自启（重启生效）。');
-        console.log('  注意：开机时若硬件未就绪，桥会启动失败——需手动用本控制台重启。');
+        console.log('  注意：硬件未就绪或中途拔插时桥会自动重连；如需手动停止用菜单 2。');
       } catch (e) {
         console.log(`✖ 创建失败：${e.message}`);
       }
@@ -350,13 +388,14 @@ async function autostartManage() {
 }
 
 function autostartVbsContent() {
-  const nodeExe = process.execPath.replace(/\\/g, '\\\\');
-  const repo = REPO_DIR.replace(/\\/g, '\\\\');
+  // VBS 字符串里的反斜杠不需转义（只有引号要加倍），保持单反斜杠路径。
+  const repo = REPO_DIR;
+  const bat = path.join(REPO_DIR, 'bridge-autostart.bat');
   return [
-    `' agent-light 桥开机自启（由 control.mjs 生成）`,
+    `' agent-light 桥开机自启（由 control.mjs 生成）：隐藏窗口跑 bridge-autostart.bat（重启循环）`,
     `Set WshShell = CreateObject("WScript.Shell")`,
     `WshShell.CurrentDirectory = "${repo}"`,
-    `WshShell.Run """${nodeExe}"" serial-bridge.mjs", 0, False`,
+    `WshShell.Run "cmd /c ""${bat}""", 0, False`,
     ``,
   ].join('\r\n');
 }
@@ -372,6 +411,7 @@ async function main() {
     console.log(`桥:   ${f.bridge}`);
     console.log(`端口: ${HOST}:${PORT} ${f.port}`);
     console.log(`硬件: ${f.hw}`);
+    console.log(`自启: ${f.autostart}`);
     console.log('------------------------------------------');
     console.log(' 1) 启动桥          2) 停止桥');
     console.log(' 3) 灯效测试        4) 状态诊断');
@@ -397,7 +437,7 @@ async function main() {
   console.log('再见。');
 }
 
-export { startBridge, stopBridge, lightTest, diagnose, autostartManage, sendCommand, gatherStatus };
+export { startBridge, stopBridge, lightTest, diagnose, autostartManage, sendCommand, gatherStatus, autostartVbsContent };
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((e) => {
