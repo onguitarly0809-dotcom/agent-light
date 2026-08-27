@@ -7,7 +7,7 @@
           "hooks": [
             {
               "type": "command",
-              "command": "node E:/agent-light-main/hook-client.mjs idle zcode",
+              "command": "node <项目根目录>/hook-client.mjs idle zcode",
               "timeout": 5
             }
           ]
@@ -18,7 +18,7 @@
           "hooks": [
             {
               "type": "command",
-              "command": "node E:/agent-light-main/hook-client.mjs thinking zcode",
+              "command": "node <项目根目录>/hook-client.mjs thinking zcode",
               "timeout": 5
             }
           ]
@@ -30,7 +30,7 @@
           "hooks": [
             {
               "type": "command",
-              "command": "node E:/agent-light-main/hook-client.mjs running zcode",
+              "command": "node <项目根目录>/hook-client.mjs running zcode",
               "timeout": 5
             }
           ]
@@ -41,7 +41,7 @@
           "hooks": [
             {
               "type": "command",
-              "command": "node E:/agent-light-main/lib/post-tool.mjs",
+              "command": "node <项目根目录>/lib/post-tool.mjs",
               "timeout": 5
             }
           ]
@@ -52,7 +52,7 @@
           "hooks": [
             {
               "type": "command",
-              "command": "node E:/agent-light-main/hook-client.mjs alarm zcode",
+              "command": "node <项目根目录>/hook-client.mjs alarm zcode",
               "timeout": 5
             }
           ]
@@ -63,7 +63,7 @@
           "hooks": [
             {
               "type": "command",
-              "command": "node E:/agent-light-main/hook-client.mjs idle zcode",
+              "command": "node <项目根目录>/hook-client.mjs idle zcode",
               "timeout": 5
             }
           ]
@@ -77,7 +77,7 @@
     "steps": [
       "1. 打开或创建 ~/.zcode/cli/config.json 文件",
       "2. 将此hooks配置合并到config.json中",
-      "3. 确保路径 E:/agent-light-main/ 根据实际安装位置调整",
+      "3. 确保路径 <项目根目录>/ 根据实际安装位置调整",
       "4. 重启ZCode使配置生效",
       "5. 运行 'tail -f agent-light-activity.log' 监控ZCode hook活动"
     ],

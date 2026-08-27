@@ -68,7 +68,7 @@ ZCode 配置文件位置：
           "hooks": [
             {
               "type": "command",
-              "command": "node E:/agent-light-main/hook-client.mjs idle zcode",
+              "command": "node <项目根目录>/hook-client.mjs idle zcode",
               "timeout": 5
             }
           ]
@@ -79,7 +79,7 @@ ZCode 配置文件位置：
           "hooks": [
             {
               "type": "command",
-              "command": "node E:/agent-light-main/hook-client.mjs thinking zcode",
+              "command": "node <项目根目录>/hook-client.mjs thinking zcode",
               "timeout": 5
             }
           ]
@@ -91,7 +91,7 @@ ZCode 配置文件位置：
           "hooks": [
             {
               "type": "command",
-              "command": "node E:/agent-light-main/hook-client.mjs running zcode",
+              "command": "node <项目根目录>/hook-client.mjs running zcode",
               "timeout": 5
             }
           ]
@@ -102,7 +102,7 @@ ZCode 配置文件位置：
           "hooks": [
             {
               "type": "command",
-              "command": "node E:/agent-light-main/lib/post-tool.mjs",
+              "command": "node <项目根目录>/lib/post-tool.mjs",
               "timeout": 5
             }
           ]
@@ -113,7 +113,7 @@ ZCode 配置文件位置：
           "hooks": [
             {
               "type": "command",
-              "command": "node E:/agent-light-main/hook-client.mjs alarm zcode",
+              "command": "node <项目根目录>/hook-client.mjs alarm zcode",
               "timeout": 5
             }
           ]
@@ -124,7 +124,7 @@ ZCode 配置文件位置：
           "hooks": [
             {
               "type": "command",
-              "command": "node E:/agent-light-main/hook-client.mjs idle zcode",
+              "command": "node <项目根目录>/hook-client.mjs idle zcode",
               "timeout": 5
             }
           ]
@@ -136,7 +136,7 @@ ZCode 配置文件位置：
 ```
 
 **重要提示**：
-- 请将 `E:/agent-light-main/` 替换为实际的项目路径
+- 请将 `<项目根目录>/` 替换为实际的项目路径
 - 路径必须使用正斜杠 `/` 或双反斜杠 `\\`
 - 保持 JSON 格式正确（逗号、引号等）
 
@@ -184,7 +184,7 @@ tasklist | findstr node.exe
 
 ```bash
 # 进入项目目录
-cd E:\agent-light-main
+cd <项目根目录>
 
 # 实时监控活动日志
 tail -f agent-light-activity.log
@@ -251,8 +251,8 @@ tail -f agent-light-activity.log
 ### 问题 4：路径问题
 
 **Windows 路径格式**：
-- ❌ 错误：`E:\agent-light-main\hook-client.mjs`
-- ✅ 正确：`E:/agent-light-main/hook-client.mjs`
+- ❌ 错误：`<项目根目录>\hook-client.mjs`
+- ✅ 正确：`<项目根目录>/hook-client.mjs`
 - ✅ 正确：`C:\\Users\\USER\\Downloads\\agent-light-main\\hook-client.mjs`
 
 ### 问题 5：与其他 CLI 冲突

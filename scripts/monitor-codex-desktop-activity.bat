@@ -9,7 +9,8 @@ echo.
 echo ========================================
 echo.
 
-tail -f "E:\agent-light-main\agent-light-activity.log" | findstr /C:"[codex]"
+cd /d "%~dp0.."
+tail -f agent-light-activity.log | findstr /C:"[codex]"
 
 if %ERRORLEVEL% NEQ 0 (
     echo.

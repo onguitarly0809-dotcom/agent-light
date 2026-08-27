@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node E:/agent-light-main/hook-client.mjs thinking"
+            "command": "node <项目根目录>/hook-client.mjs thinking"
           }
         ]
       }
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node E:/agent-light-main/hook-client.mjs running"
+            "command": "node <项目根目录>/hook-client.mjs running"
           }
         ]
       }
@@ -27,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node E:/agent-light-main/lib/post-tool.mjs"
+            "command": "node <项目根目录>/lib/post-tool.mjs"
           }
         ]
       }
@@ -37,7 +37,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node E:/agent-light-main/lib/notification.mjs"
+            "command": "node <项目根目录>/lib/notification.mjs"
           }
         ]
       }
@@ -47,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node E:/agent-light-main/hook-client.mjs idle"
+            "command": "node <项目根目录>/hook-client.mjs idle"
           }
         ]
       }

@@ -10,7 +10,8 @@ Write-Host ""
 $GITHUB_USERNAME = "Onguitarly"
 $REPO_NAME = "agent-light"
 $REPO_DESCRIPTION = "Claude Code status indicator using ESP32-C3 traffic light - Hardware and software solutions for AI coding visualization"
-$PROJECT_PATH = "E:\agent-light-main"
+# 项目根目录 = 本脚本所在 scripts/ 的上一级，放任何盘符都能用
+$PROJECT_PATH = Split-Path $PSScriptRoot -Parent
 
 # 检查项目路径是否存在
 if (-not (Test-Path $PROJECT_PATH)) {
@@ -93,14 +94,14 @@ Write-Host "🔗 正在配置 Git 远程仓库..." -ForegroundColor Cyan
 # 切换到项目目录
 Set-Location $PROJECT_PATH
 
-# 检查是否已有远程仓库
-$remotes = git remote
+# 检查是否已有远程仓库（remote 始终用干净 URL，token 永不写入 .git/config）
+$cleanUrl = "https://github.com/$GITHUB_USERNAME/$REPO_NAME.git"
 if ($remotes -match "origin") {
     Write-Host "🔄 更新现有远程仓库地址..." -ForegroundColor Yellow
-    git remote set-url origin "https://$GITHUB_USERNAME:$token@github.com/$GITHUB_USERNAME/$REPO_NAME.git"
+    git remote set-url origin $cleanUrl
 } else {
     Write-Host "➕ 添加新的远程仓库..." -ForegroundColor Yellow
-    git remote add origin "https://$GITHUB_USERNAME:$token@github.com/$GITHUB_USERNAME/$REPO_NAME.git"
+    git remote add origin $cleanUrl
 }
 
 # 重命名分支为 main
@@ -114,20 +115,17 @@ Write-Host ""
 Write-Host "📤 正在推送代码到 GitHub..." -ForegroundColor Cyan
 Write-Host "这可能需要几分钟，请耐心等待..." -ForegroundColor Yellow
 
-try {
-    $pushOutput = git push -u origin main 2>&1
+# 用一次性带 token 的 URL 推送（仅存在于本次命令内存中，不落盘）
+$pushUrl = "https://$GITHUB_USERNAME:$token@github.com/$GITHUB_USERNAME/$REPO_NAME.git"
+$pushOutput = git push $pushUrl main 2>&1
+if ($LASTEXITCODE -eq 0) {
     Write-Host "✅ 代码推送成功！" -ForegroundColor Green
-} catch {
-    Write-Host "❌ 推送失败: $($_.Exception.Message)" -ForegroundColor Red
-    Write-Host "详细错误信息:" -ForegroundColor Yellow
+    git branch --set-upstream-to=origin/main main | Out-Null
+} else {
+    Write-Host "❌ 推送失败:" -ForegroundColor Red
     Write-Host $pushOutput -ForegroundColor Red
     exit 1
 }
-
-# 清理远程仓库中的令牌（安全考虑）
-Write-Host ""
-Write-Host "🔒 正在清理远程仓库地址中的敏感信息..." -ForegroundColor Cyan
-git remote set-url origin "https://github.com/$GITHUB_USERNAME/$REPO_NAME.git"
 
 Write-Host ""
 Write-Host "================================" -ForegroundColor Green

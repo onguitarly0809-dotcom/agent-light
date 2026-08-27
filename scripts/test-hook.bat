@@ -1,6 +1,6 @@
 @echo off
 echo Testing Codex hook with trust bypass...
-cd /d "E:\agent-light-main"
+cd /d "%~dp0.."
 codex --dangerously-bypass-hook-trust exec -- "echo Hook test from Codex"
 echo.
 echo Checking activity log:

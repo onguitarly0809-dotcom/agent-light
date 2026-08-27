@@ -14,11 +14,29 @@ Turn an Arduino traffic-light module into a real-time status indicator for Claud
 
 ## Prerequisites
 
-- Node.js (no dependencies to install)
+- Node.js 18+ (run `npm install` after copying the project — pulls in serialport)
 - An Arduino with a traffic-light LED module connected via USB serial
 - Close the Arduino IDE serial monitor before starting the bridge
 
 > No hardware? Jump to [Software-Only Version](#software-only-version-no-hardware-required).
+
+## 快速安装（在新电脑上 / 分享给朋友）
+
+前提：装好 [Node.js 18+](https://nodejs.org/)，插上已刷固件的 ESP32-C3 红绿灯（原生 USB，Win10/11 免驱）。
+
+1. 把整个项目文件夹拷到对方电脑（git clone / 复制 / zip 均可，放哪个盘都行）
+2. 双击 **`install.bat`**，按提示选择要接入的 AI CLI，脚本会自动：
+   - 安装依赖（serialport）
+   - 写入所选 CLI 的 hooks 配置（自动使用本机路径，与已有 hooks 共存，写入前自动备份）
+   - 配置桥进程开机自启
+   - 启动桥并发送测试命令（灯亮绿色即成功）
+3. 想改配置或诊断问题：`node control.mjs`（控制台：启停桥 / 灯效测试 / 状态诊断）
+
+> ChatGPT Desktop（Codex）注意：hooks 信任状态每次重启应用后会重置，
+> 需在 设置 → 钩子 页面重新信任，这是 Desktop 的机制，无法绕过。
+
+> 要给别人做一盏新灯（而不是直接把你手上这盏给他）？用 Arduino IDE 烧录
+> `firmware/esp32c3-agent-light/esp32c3-agent-light.ino`，接线见该文件头部注释。
 
 ### Hardware
 
@@ -170,7 +188,7 @@ npm run light -- Y:blink:700
 
 ### 5. 配置 Claude Code hooks
 
-把 [`claude-settings-snippet.json`](claude-settings-snippet.json) 合并进你的 `~/.claude/settings.json`（即 `C:\Users\USER\.claude\settings.json`）。确认里面的 `hook-client.mjs` 路径指向你的实际仓库位置。配置后重启 Claude Code，发一条 prompt，灯应随状态变化：提交时跑马灯（绿→黄→红） → 工具运行红闪 → 工具出错红快闪 → 需要确认时红黄警灯 → 结束绿常亮。
+把 [`configs/claude-settings-snippet.json`](configs/claude-settings-snippet.json) 合并进你的 `~/.claude/settings.json`（Windows 即 `%USERPROFILE%\.claude\settings.json`），并把 `<项目根目录>` 替换为本仓库实际路径（或直接运行 `install.bat` 自动完成）。配置后重启 Claude Code，发一条 prompt，灯应随状态变化：提交时跑马灯（绿→黄→红） → 工具运行黄闪 → 工具出错红快闪 → 需要确认时红黄警灯 → 结束绿常亮。
 
 > hooks 是用户级全局配置，因此**任意 CLI、任意目录下启动的 `claude`** 都会触发灯效。同一台机同时开多个 `claude` 会话会驱动同一盏灯，状态按最后到达的命令跳变。
 

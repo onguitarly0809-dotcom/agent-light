@@ -103,7 +103,7 @@ Agent Light 项目是一个硬件-软件集成项目，将ESP32-C3红绿灯模�
 
 ### 配置验证
 ```
-📄 ZCode配置文件：C:\Users\USER\.zcode\cli\config.json
+📄 ZCode配置文件：%USERPROFILE%\.zcode\cli\config.json
 ✅ Hooks配置存在且已启用
 📊 配置的事件数量：6个
 
@@ -182,9 +182,9 @@ ZCode: 4 条记录 ✅
 **症状**：Windows 路径在 JSON 配置中需要特定格式
 
 **解决**：
-- ✅ 正确：`E:/agent-light-main/`
+- ✅ 正确：`<项目根目录>/`
 - ✅ 正确：`C:\\Users\\USER\\Downloads\\agent-light-main\\`
-- ❌ 错误：`E:\agent-light-main\`
+- ❌ 错误：`<项目根目录>\`
 
 ### 问题3：ZCode 进程已启动
 **症状**：配置添加前 ZCode 已在运行，hooks 未立即生效

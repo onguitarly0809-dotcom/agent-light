@@ -26,7 +26,7 @@
 
 ### 1. 修改 config.toml
 
-在 `C:\Users\USER\.codex\config.toml` 中添加：
+在 `%USERPROFILE%\.codex\config.toml` 中添加：
 
 ```toml
 [hooks]
@@ -85,7 +85,7 @@ enabled = true
 
 ### 测试配置
 ```bash
-cd E:\agent-light-main
+cd <项目根目录>
 node test-codex-desktop-hooks.mjs
 ```
 

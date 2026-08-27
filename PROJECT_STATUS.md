@@ -263,6 +263,6 @@ Esc 打断思考时**没有可靠 hook 触发**（Stop 不保证触发，无专�
 ## 环境信息
 
 - 平台：Windows 10。Node v24.18.0。ESP32 Arduino 核心 2.x。
-- 仓库路径：`E:\agent-light-main`（建议挪到固定位置后改 hook 路径）。
-- 全局配置：`C:\Users\USER\.claude\settings.json`、`C:\Users\USER\.codex\hooks.json`、`C:\Users\USER\.zcode\cli\config.json`。
+- 仓库路径：`<项目根目录>`（建议挪到固定位置后改 hook 路径）。
+- 全局配置：`%USERPROFILE%\.claude\settings.json`、`%USERPROFILE%\.codex\hooks.json`、`%USERPROFILE%\.zcode\cli\config.json`。
 - 硬件：ESP32-C3 SuperMini，COM3，VID 303A（Espressif 原生 USB CDC）。

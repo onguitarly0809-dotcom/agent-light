@@ -143,7 +143,7 @@ ChatGPT Desktop 需要在 config.toml 中明确启用 hooks 功能，否则不�
 
 ### 方案 1：使用带参数的启动脚本（推荐，立即生效）
 
-**文件位置**：`E:\agent-light-main\codex-desktop-hooks.bat`
+**文件位置**：`<项目根目录>\codex-desktop-hooks.bat`
 
 **内容**：
 ```batch
@@ -195,7 +195,7 @@ codex --dangerously-bypass-hook-trust --model glm-4.6
 
 **或使用项目配置的启动脚本**：
 ```bash
-cd "E:\agent-light-main"
+cd "<项目根目录>"
 codex exec --dangerously-bypass-hook-trust --model glm-4.6
 ```
 
@@ -213,7 +213,7 @@ codex exec --dangerously-bypass-hook-trust --model glm-4.6
 
 **实时监控日志**：
 ```bash
-tail -f "E:\agent-light-main\agent-light-activity.log"
+tail -f "<项目根目录>\agent-light-activity.log"
 ```
 
 **预期结果**：
@@ -224,7 +224,7 @@ tail -f "E:\agent-light-main\agent-light-activity.log"
 
 **查看桥日志**：
 ```bash
-tail -f "E:\agent-light-main\bridge.log"
+tail -f "<项目根目录>\bridge.log"
 ```
 
 **预期结果**：
@@ -245,7 +245,7 @@ tail -f "E:\agent-light-main\bridge.log"
 
 ### hooks.json 配置
 
-**位置**：`C:\Users\USER\.codex\hooks.json`
+**位置**：`%USERPROFILE%\.codex\hooks.json`
 
 **当前配置**：
 ```json
@@ -266,7 +266,7 @@ tail -f "E:\agent-light-main\bridge.log"
         "hooks": [
           {
             "type": "command",
-            "command": "node E:/agent-light-main/hook-client.mjs thinking codex",
+            "command": "node <项目根目录>/hook-client.mjs thinking codex",
             "timeout": 5
           }
         ]
@@ -277,7 +277,7 @@ tail -f "E:\agent-light-main\bridge.log"
         "hooks": [
           {
             "type": "command",
-            "command": "node E:/agent-light-main/hook-client.mjs idle codex",
+            "command": "node <项目根目录>/hook-client.mjs idle codex",
             "timeout": 5
           }
         ]
@@ -288,7 +288,7 @@ tail -f "E:\agent-light-main\bridge.log"
         "hooks": [
           {
             "type": "command",
-            "command": "node E:/agent-light-main/hook-client.mjs running codex",
+            "command": "node <项目根目录>/hook-client.mjs running codex",
             "timeout": 5
           }
         ]
@@ -299,7 +299,7 @@ tail -f "E:\agent-light-main\bridge.log"
         "hooks": [
           {
             "type": "command",
-            "command": "node E:/agent-light-main/lib/post-tool-codex.mjs",
+            "command": "node <项目根目录>/lib/post-tool-codex.mjs",
             "timeout": 5
           }
         ]
@@ -310,7 +310,7 @@ tail -f "E:\agent-light-main\bridge.log"
         "hooks": [
           {
             "type": "command",
-            "command": "node E:/agent-light-main/hook-client.mjs alarm codex",
+            "command": "node <项目根目录>/hook-client.mjs alarm codex",
             "timeout": 5
           }
         ]
@@ -321,7 +321,7 @@ tail -f "E:\agent-light-main\bridge.log"
         "hooks": [
           {
             "type": "command",
-            "command": "node C:/Users\USER/Downloads/agent-light-main/hook-client.mjs idle codex",
+            "command": "node <项目根目录>/hook-client.mjs idle codex",
             "timeout": 5
           }
         ]
@@ -396,13 +396,13 @@ env_key = "BIGMODEL_API_KEY"
 
 3. **手动测试 hook 客户端**：
    ```bash
-   node "E:\agent-light-main/hook-client.mjs" chase codex
+   node "<项目根目录>/hook-client.mjs" chase codex
    # 应该在 agent-light-activity.log 中看到 [codex] 记录
    ```
 
 4. **检查 hooks 配置**：
    ```bash
-   cat "C:\Users\USER\.codex\hooks.json"
+   cat "%USERPROFILE%\.codex\hooks.json"
    # 确认配置格式正确
    ```
 
@@ -438,7 +438,7 @@ env_key = "BIGMODEL_API_KEY"
 
 **立即使用**：
 ```bash
-cd "E:\agent-light-main"
+cd "<项目根目录>"
 ./codex-desktop-hooks.bat
 ```
 
