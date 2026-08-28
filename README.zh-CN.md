@@ -46,7 +46,7 @@ ZCode       ─┘                                                              
 | 接入方式 | `~/.claude/settings.json` | `~/.codex/hooks.json` + `config.toml` 启用 hooks | `~/.zcode/cli/config.json` |
 | 事件 | UserPromptSubmit / PreToolUse / PostToolUse / Notification / Stop | 另加 SessionStart / PermissionRequest | 同 Codex 六事件 |
 | 出错判定 | `tool_response.is_error` | `is_error` 或非零 `exit_code` | 同 Claude |
-| 配置工具 | `install.bat` | `install.bat`（Desktop 需手动信任） | `install.bat` 或 `scripts/setup-zcode-hooks.bat` |
+| 配置工具 | `install.bat` | `install.bat`（Desktop 需手动信任） | `install.bat` |
 | 手动模板 | `configs/claude-settings-snippet.json` | `configs/codex-hooks-snippet.json` | `configs/zcode-hooks-snippet.json` |
 
 模板里的 `<项目根目录>` 占位符需替换为实际路径（`install.bat` 会自动处理）。
@@ -92,7 +92,7 @@ npm run light -- Y:blink:700
 ├── hook-client.mjs                  # hooks 统一入口：归一化命令 → TCP → 记活动日志
 ├── lib/
 │   ├── commands.mjs                 # 命令解析/校验/别名/环境变量覆盖（唯一测试覆盖模块）
-│   ├── post-tool.mjs / -codex / -hermes   # 三家 PostToolUse 出错判定
+│   ├── post-tool.mjs / -codex        # PostToolUse 出错判定
 │   └── notification.mjs             # Notification hook：区分"需处理"与"空闲等你"
 ├── serial-bridge.mjs                # TCP→串口桥：自动探测串口 + 看门狗 + 断线退出
 ├── control.mjs                      # 桌面控制台（启停/灯效测试/诊断/自启）
@@ -103,7 +103,7 @@ npm run light -- Y:blink:700
 ├── configs/                         # 三家 CLI 的 hooks 配置模板
 ├── scripts/                         # 工具脚本（监控/启动器/上传）
 ├── tools/                           # hooks 触发诊断工具
-├── docs/                            # 固件烧录指南、迁移指南、ZCode 配置、历史归档
+├── docs/                            # 固件烧录指南、ZCode 配置说明
 └── test/                            # node --test 单元测试
 ```
 
@@ -128,6 +128,10 @@ npm run light -- Y:blink:700
 npm install    # 安装 serialport
 npm test       # 命令归一化单元测试
 ```
+
+## 致谢
+
+硬件方案与灯效设计参考了 CursorLight 项目。
 
 ## License
 

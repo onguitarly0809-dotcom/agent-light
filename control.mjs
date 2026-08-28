@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Agent Light 桌面控制台：启动/停止桥、灯效测试、状态诊断、开机自启管理。
-// 双击桌面 Agent-Light控制台.bat 拉起本脚本。详见 PROJECT_STATUS.md。
+// 双击桌面 Agent-Light控制台.bat 拉起本脚本。详见 README.md。
 
 import fs from 'node:fs';
 import net from 'node:net';

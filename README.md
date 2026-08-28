@@ -57,7 +57,7 @@ Prerequisite: [Node.js 18+](https://nodejs.org/).
 | Config file | `~/.claude/settings.json` | `~/.codex/hooks.json` + `[hooks]` in `config.toml` | `~/.zcode/cli/config.json` |
 | Events | UserPromptSubmit / PreToolUse / PostToolUse / Notification / Stop | adds SessionStart / PermissionRequest | same six as Codex |
 | Error detection | `tool_response.is_error` | `is_error` or non-zero `exit_code` | same as Claude |
-| Setup tool | `install.bat` | `install.bat` (Desktop needs manual trust) | `install.bat` or `scripts/setup-zcode-hooks.bat` |
+| Setup tool | `install.bat` | `install.bat` (Desktop needs manual trust) | `install.bat` |
 | Manual template | `configs/claude-settings-snippet.json` | `configs/codex-hooks-snippet.json` | `configs/zcode-hooks-snippet.json` |
 
 Replace the `<项目根目录>` placeholder in the templates with your actual project path
@@ -111,7 +111,7 @@ Bridge CLI flags: `node serial-bridge.mjs --serial COM3 --baud 115200 --listen 8
 ├── hook-client.mjs                  # Hook entry point: normalize command → TCP → activity log
 ├── lib/
 │   ├── commands.mjs                 # Command parsing/validation/aliases/env overrides (unit-tested)
-│   ├── post-tool.mjs / -codex / -hermes   # PostToolUse error detection per CLI family
+│   ├── post-tool.mjs / -codex      # PostToolUse error detection per CLI family
 │   └── notification.mjs             # Notification hook: "needs you" vs "idle waiting"
 ├── serial-bridge.mjs                # TCP→serial bridge: auto port detect + watchdog + exit-on-disconnect
 ├── control.mjs                      # Desktop console (start/stop, effects, diagnostics, autostart)
@@ -122,7 +122,7 @@ Bridge CLI flags: `node serial-bridge.mjs --serial COM3 --baud 115200 --listen 8
 ├── configs/                         # Hook config templates for the three CLIs
 ├── scripts/                         # Utility scripts (monitors / launchers / upload)
 ├── tools/                           # Hook-firing diagnostics
-├── docs/                            # Firmware guide, migration guide, ZCode setup, archives
+├── docs/                            # Firmware guide, ZCode setup notes
 └── test/                            # node --test unit tests
 ```
 
@@ -152,6 +152,10 @@ when using it.
 npm install    # installs serialport
 npm test       # command-normalization unit tests
 ```
+
+## Credits
+
+Hardware design and light effects are inspired by the CursorLight project.
 
 ## License
 

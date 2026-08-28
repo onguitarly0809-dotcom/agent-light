@@ -17,10 +17,10 @@
 
 ### 1. 自动配置（最简单）
 
-双击运行 `scripts/setup-zcode-hooks.bat` 脚本：
+双击运行 `根目录 install.bat` 脚本：
 
 ```batch
-scripts/setup-zcode-hooks.bat
+根目录 install.bat
 ```
 
 该脚本会自动：
@@ -33,7 +33,7 @@ scripts/setup-zcode-hooks.bat
 配置完成后，使用专用启动脚本：
 
 ```batch
-scripts/zcode-desktop-hooks.bat
+直接运行 zcode
 ```
 
 或直接使用 ZCode 命令：
@@ -349,9 +349,9 @@ Agent Light 设计支持多 CLI 同时使用：
 
 ## 📚 相关文档
 
-- **项目总览**：`PROJECT_STATUS.md` - 完整的项目状态和技术文档
+- **项目总览**：`README.md`（含架构、命令、配置、排障）
 - **Claude Code 配置**：`configs/claude-settings-snippet.json`
-- **Codex 配置**：`configs/codex-hooks-snippet.json` + `docs/archive/CODEX_HOOKS_ISSUE_RESOLUTION.md`
+- **Codex 配置**：`configs/codex-hooks-snippet.json`（Desktop 信任问题见 README 排障表）
 - **故障排除**：`Agent-Light控制台.bat` → 菜单 4
 
 ## 🎉 成功标志
@@ -366,7 +366,7 @@ Agent Light 设计支持多 CLI 同时使用：
 
 ## 💡 提示和最佳实践
 
-1. **首次配置**：推荐使用自动配置脚本 `scripts/setup-zcode-hooks.bat`
+1. **首次配置**：推荐使用自动配置脚本 `根目录 install.bat`
 2. **路径管理**：将项目放在固定位置，避免频繁修改路径
 3. **定期检查**：使用 `tail -f agent-light-activity.log` 监控运行状态
 4. **问题诊断**：优先使用桌面控制台的菜单 4 进行状态诊断
