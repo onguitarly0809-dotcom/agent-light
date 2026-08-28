@@ -83,7 +83,8 @@ npm run light -- Y:blink:700
 - **停桥**：双击 `stop-bridge.bat`（重新烧固件前必做，释放串口）。
 - **看日志**：`bridge.log`（桥全部命令流）、`agent-light-activity.log`（按来源区分的 hooks 活动，`npm run` 无关）。
 - **监控某家 CLI**：`scripts/monitor-zcode-activity.bat` / `scripts/monitor-codex-desktop-activity.bat`。
-- **诊断某家 hooks 是否触发**：`tools/test-zcode-hooks.mjs` / `tools/test-codex-hooks.mjs`。
+- **诊断某家 hooks 是否触发**：`tools/test-zcode-hooks.mjs` / `tools/test-codex-hooks.mjs`；
+  或用 `tools/test-hook.bat` 发射一次真实 Codex 请求验证（消耗 API 配额）。
 
 ## 目录结构
 
@@ -101,8 +102,8 @@ npm run light -- Y:blink:700
 │   ├── esp32c3-agent-light/         # 主力固件：ESP32-C3 + 公共阳极灯板（PWM、六模式）
 │   └── agent-light.ino              # 旧版：Arduino 经典接线（引脚 5/6/7、9600、功能子集）
 ├── configs/                         # 三家 CLI 的 hooks 配置模板
-├── scripts/                         # 工具脚本（监控/启动器/上传）
-├── tools/                           # hooks 触发诊断工具
+├── scripts/                         # 环境操作（启动器 / 重启 / 实时监控）
+├── tools/                           # 安装验证（配置检查 / hooks 触发测试）
 ├── docs/                            # 固件烧录指南、ZCode 配置说明
 └── test/                            # node --test 单元测试
 ```

@@ -102,7 +102,8 @@ Bridge CLI flags: `node serial-bridge.mjs --serial COM3 --baud 115200 --listen 8
   `agent-light-activity.log` (hook activity tagged by source CLI).
 - **Monitor one CLI**: `scripts/monitor-zcode-activity.bat` /
   `scripts/monitor-codex-desktop-activity.bat`.
-- **Diagnose hook firing**: `tools/test-zcode-hooks.mjs` / `tools/test-codex-hooks.mjs`.
+- **Diagnose hook firing**: `tools/test-zcode-hooks.mjs` / `tools/test-codex-hooks.mjs`,
+  or fire one real Codex turn with `tools/test-hook.bat` (uses API quota).
 
 ## Project Layout
 
@@ -120,8 +121,8 @@ Bridge CLI flags: `node serial-bridge.mjs --serial COM3 --baud 115200 --listen 8
 │   ├── esp32c3-agent-light/         # Main firmware: ESP32-C3 + common-anode board (PWM, 6 modes)
 │   └── agent-light.ino              # Legacy: classic Arduino wiring (pins 5/6/7, 9600, feature subset)
 ├── configs/                         # Hook config templates for the three CLIs
-├── scripts/                         # Utility scripts (monitors / launchers / upload)
-├── tools/                           # Hook-firing diagnostics
+├── scripts/                         # Environment ops (launchers / restarters / monitors)
+├── tools/                           # Install verification (config checks, hook firing tests)
 ├── docs/                            # Firmware guide, ZCode setup notes
 └── test/                            # node --test unit tests
 ```
