@@ -7,7 +7,13 @@ Write-Host "================================" -ForegroundColor Green
 Write-Host ""
 
 # 配置参数
-$GITHUB_USERNAME = "Onguitarly"
+# 用户名从现有 origin 远程自动推导；没有远程时手动输入，不在脚本里硬编码
+$originUrl = git remote get-url origin 2>$null
+if ($originUrl -match 'github\.com[/:]([^/]+?)(\.git)?$') {
+    $GITHUB_USERNAME = $Matches[1]
+} else {
+    $GITHUB_USERNAME = Read-Host "请输入你的 GitHub 用户名"
+}
 $REPO_NAME = "agent-light"
 $REPO_DESCRIPTION = "Claude Code status indicator using ESP32-C3 traffic light - Hardware and software solutions for AI coding visualization"
 # 项目根目录 = 本脚本所在 scripts/ 的上一级，放任何盘符都能用

@@ -35,8 +35,9 @@ Turn an Arduino traffic-light module into a real-time status indicator for Claud
 > ChatGPT Desktop（Codex）注意：hooks 信任状态每次重启应用后会重置，
 > 需在 设置 → 钩子 页面重新信任，这是 Desktop 的机制，无法绕过。
 
-> 要给别人做一盏新灯（而不是直接把你手上这盏给他）？用 Arduino IDE 烧录
-> `firmware/esp32c3-agent-light/esp32c3-agent-light.ino`，接线见该文件头部注释。
+> 要给别人做一盏新灯（而不是直接把你手上这盏给他）？看
+> [ESP32-C3 固件烧录指南](docs/FIRMWARE_GUIDE.md)——硬件清单、接线、
+> Arduino IDE 设置、烧录、验证一站式说明，拿到零件即可照做。
 
 ### Hardware
 
