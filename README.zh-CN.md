@@ -119,12 +119,6 @@ Claude Code hooks ──> hook-client.mjs ──TCP──> serial-bridge.mjs ─
 - **serial-bridge.mjs** — 常驻 TCP 服务器，将命令转发到串口。
 - **lib/commands.mjs** — 共享的命令解析与校验逻辑。
 
-## 详细教程
-
-在微信公众号「**阿皓AI**」查看完整图文教程，搜索关注即可。
-
-![微信公众号：阿皓AI](images/ahao.png)
-
 ## 许可证
 
 MIT

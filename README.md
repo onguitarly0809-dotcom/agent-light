@@ -211,12 +211,6 @@ Claude Code hooks ──> hook-client.mjs ──TCP──> serial-bridge.mjs ─
 - **serial-bridge.mjs** — long-running TCP server that forwards commands to the serial port.
 - **lib/commands.mjs** — shared command parsing and validation.
 
-## Tutorial
-
-For a detailed step-by-step tutorial, follow the WeChat Official Account **阿皓AI** (Chinese only).
-
-![WeChat Official Account: 阿皓AI](images/ahao.png)
-
 ## License
 
 MIT

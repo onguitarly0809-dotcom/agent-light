@@ -102,7 +102,6 @@ agent-light-main/
 │   └── main.rs                       # 虚拟交通灯主程序
 │
 ├── images/                           # 资源文件
-│   ├── ahao.png                      # 微信公众号二维码
 │   └── list.jpg                      # 硬件购买清单图示
 │
 ├── test/                             # 测试文件
@@ -664,7 +663,6 @@ npm run bridge 2>&1 | tee bridge-debug.log
 
 ### 社区支持
 - GitHub Issues：[项目仓库地址]/issues
-- 微信公众号：阿皓AI（images/ahao.png）
 
 ## 附录
 
