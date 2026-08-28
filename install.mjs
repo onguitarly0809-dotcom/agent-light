@@ -7,13 +7,21 @@ import net from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
 import readline from 'node:readline';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const REPO = path.dirname(fileURLToPath(import.meta.url));
 const DRY = process.argv.includes('--dry-run');
 const PORT = Number(process.env.CLAUDE_LIGHT_PORT ?? 8765);
 const HOME = os.homedir();
+
+// 双击 install.bat 启动时控制台是 GBK，Node 输出的 UTF-8 中文会乱码。
+// 在子进程里执行 chcp 65001 切换整个控制台的代码页（对父进程生效）。
+if (process.platform === 'win32') {
+  try {
+    spawnSync('cmd.exe', ['/c', 'chcp', '65001'], { stdio: 'ignore', windowsHide: true });
+  } catch { /* 切换失败只影响中文显示，不影响功能 */ }
+}
 
 // 回调式 readline：stdin 提前关闭（EOF/管道断开）时把挂起的问题结算为 null，
 // 避免 Promise 永不结算导致进程在半途静默退出。

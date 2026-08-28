@@ -1,24 +1,24 @@
 @echo off
-chcp 65001 >nul
-REM Agent Light 一键安装：检查 Node → 装依赖 → 配 CLI hooks → 开机自启 → 启动桥自检
-REM 便携：%~dp0 定位自身目录，项目文件夹放任何盘符都能装。
+REM Agent Light one-click installer (ASCII-only for cmd parser safety).
+REM All interactive Chinese UI lives in install.mjs, which switches the
+REM console to UTF-8 by itself. Do NOT add non-ASCII text or chcp here:
+REM chcp 65001 mid-file desyncs the batch parser on Chinese Windows.
 setlocal
 cd /d "%~dp0"
 
 where node >nul 2>nul
 if errorlevel 1 (
-    echo [X] 未检测到 Node.js。
-    echo     请先到 https://nodejs.org 安装 Node.js 18+（一路默认即可），
-    echo     装完后重新双击本脚本。
+    echo [X] Node.js not found. Install Node.js 18+ from https://nodejs.org first,
+    echo     then run this script again.
     pause
     exit /b 1
 )
 
 if not exist "node_modules\serialport" (
-    echo [*] 首次运行：安装依赖 serialport 中（约 1-2 分钟）...
+    echo [*] Installing dependencies ^(serialport^), takes 1-2 minutes...
     call npm install
     if errorlevel 1 (
-        echo [X] npm install 失败：请检查网络后重试。
+        echo [X] npm install failed. Check your network and retry.
         pause
         exit /b 1
     )
