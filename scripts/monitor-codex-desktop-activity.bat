@@ -1,10 +1,10 @@
 @echo off
 echo ========================================
-echo   Codex Desktop æ´»åŠ¨ç›‘æ§
+echo   Codex Desktop »î¶¯¼à¿Ø
 echo ========================================
 echo.
-echo æ­£åœ¨ç›‘æ§ Codex Desktop hooks æ´»åŠ¨...
-echo æŒ‰ Ctrl+C åœæ­¢ç›‘æ§
+echo ÕıÔÚ¼à¿Ø Codex Desktop hooks »î¶¯...
+echo °´ Ctrl+C Í£Ö¹¼à¿Ø
 echo.
 echo ========================================
 echo.
@@ -14,7 +14,7 @@ tail -f agent-light-activity.log | findstr /C:"[codex]"
 
 if %ERRORLEVEL% NEQ 0 (
     echo.
-    echo ç›‘æ§ç»“æŸæˆ–å‡ºé”™
+    echo ¼à¿Ø½áÊø»ò³ö´í
     echo.
     pause
 )

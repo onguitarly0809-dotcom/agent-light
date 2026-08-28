@@ -1,6 +1,6 @@
 @echo off
 echo ========================================
-echo   ZCode Hooks è‡ªåŠ¨é…ç½®è„šæœ¬
+echo   ZCode Hooks ×Ô¶¯ÅäÖÃ½Å±¾
 echo ========================================
 echo.
 
@@ -8,20 +8,20 @@ set "ZCODE_CONFIG=%USERPROFILE%\.zcode\cli\config.json"
 set "PROJECT_DIR=%~dp0"
 set "PROJECT_DIR=%PROJECT_DIR:~0,-1%"
 
-echo é…ç½®ä¿¡æ¯ï¼š
-echo   ZCodeé…ç½®æ–‡ä»¶: %ZCODE_CONFIG%
-echo   é¡¹ç›®ç›®å½•: %PROJECT_DIR%
+echo ÅäÖÃÐÅÏ¢£º
+echo   ZCodeÅäÖÃÎÄ¼þ: %ZCODE_CONFIG%
+echo   ÏîÄ¿Ä¿Â¼: %PROJECT_DIR%
 echo.
 
 if not exist "%ZCODE_CONFIG%" (
-    echo [!] ZCodeé…ç½®æ–‡ä»¶ä¸å­˜åœ¨ï¼Œå°†åˆ›å»ºæ–°æ–‡ä»¶
+    echo [!] ZCodeÅäÖÃÎÄ¼þ²»´æÔÚ£¬½«´´½¨ÐÂÎÄ¼þ
     echo {"hooks": {"enabled": true, "events": {}}} > "%ZCODE_CONFIG%"
 )
 
-echo [*] æ­£åœ¨å¤‡ä»½çŽ°æœ‰é…ç½®...
+echo [*] ÕýÔÚ±¸·ÝÏÖÓÐÅäÖÃ...
 copy "%ZCODE_CONFIG%" "%ZCODE_CONFIG%.backup" >nul 2>&1
 
-echo [*] æ­£åœ¨æ·»åŠ Agent Light hooksé…ç½®...
+echo [*] ÕýÔÚÌí¼ÓAgent Light hooksÅäÖÃ...
 echo.
 
 powershell -ExecutionPolicy Bypass -Command ^
@@ -40,32 +40,32 @@ $config | ConvertTo-Json -Depth 10 | Set-Content '%ZCODE_CONFIG%'"
 if %ERRORLEVEL% EQU 0 (
     echo.
     echo ========================================
-    echo   âœ“ é…ç½®æˆåŠŸï¼
+    echo   ¡Ì ÅäÖÃ³É¹¦£¡
     echo ========================================
     echo.
-    echo å·²å®Œæˆçš„é…ç½®ï¼š
-    echo   [âœ“] ZCode hookså·²å¯ç”¨
-    echo   [âœ“] SessionStart â†’ ç©ºé—²çŠ¶æ€ï¼ˆç»¿è‰²ï¼‰
-    echo   [âœ“] UserPromptSubmit â†’ æ€è€ƒçŠ¶æ€ï¼ˆè·‘é©¬ç¯ï¼‰
-    echo   [âœ“] PreToolUse â†’ è¿è¡ŒçŠ¶æ€ï¼ˆé»„è‰²é—ªçƒï¼‰
-    echo   [âœ“] PostToolUse â†’ å®Œæˆ/é”™è¯¯çŠ¶æ€
-    echo   [âœ“] PermissionRequest â†’ è­¦æŠ¥çŠ¶æ€ï¼ˆçº¢é»„äº¤æ›¿ï¼‰
-    echo   [âœ“] Stop â†’ ç©ºé—²çŠ¶æ€ï¼ˆç»¿è‰²ï¼‰
+    echo ÒÑÍê³ÉµÄÅäÖÃ£º
+    echo   [¡Ì] ZCode hooksÒÑÆôÓÃ
+    echo   [¡Ì] SessionStart -> ¿ÕÏÐ×´Ì¬£¨ÂÌÉ«£©
+    echo   [¡Ì] UserPromptSubmit -> Ë¼¿¼×´Ì¬£¨ÅÜÂíµÆ£©
+    echo   [¡Ì] PreToolUse -> ÔËÐÐ×´Ì¬£¨»ÆÉ«ÉÁË¸£©
+    echo   [¡Ì] PostToolUse -> Íê³É/´íÎó×´Ì¬
+    echo   [¡Ì] PermissionRequest -> ¾¯±¨×´Ì¬£¨ºì»Æ½»Ìæ£©
+    echo   [¡Ì] Stop -> ¿ÕÏÐ×´Ì¬£¨ÂÌÉ«£©
     echo.
-    echo ä¸‹ä¸€æ­¥æ“ä½œï¼š
-    echo   1. ç¡®ä¿çº¢ç»¿ç¯æ¡¥æŽ¥æ­£åœ¨è¿è¡Œï¼šnode control.mjs
-    echo   2. å¯åŠ¨ZCodeï¼šscripts/zcode-desktop-hooks.bat
-    echo   3. ç›‘æŽ§æ´»åŠ¨æ—¥å¿—ï¼štail -f agent-light-activity.log
+    echo ÏÂÒ»²½²Ù×÷£º
+    echo   1. È·±£ºìÂÌµÆÇÅ½ÓÕýÔÚÔËÐÐ£ºnode control.mjs
+    echo   2. Æô¶¯ZCode£ºscripts/zcode-desktop-hooks.bat
+    echo   3. ¼à¿Ø»î¶¯ÈÕÖ¾£ºtail -f agent-light-activity.log
     echo.
-    echo å¤‡ä»½æ–‡ä»¶ï¼š %ZCODE_CONFIG%.backup
+    echo ±¸·ÝÎÄ¼þ£º %ZCODE_CONFIG%.backup
     echo.
 ) else (
     echo.
-    echo [!] é…ç½®å¤±è´¥ï¼è¯·æ‰‹åŠ¨é…ç½®
+    echo [!] ÅäÖÃÊ§°Ü£¡ÇëÊÖ¶¯ÅäÖÃ
     echo.
-    echo æ‰‹åŠ¨é…ç½®æ­¥éª¤ï¼š
-    echo   1. æ‰“å¼€æ–‡ä»¶ï¼š%ZCODE_CONFIG%
-    echo   2. å‚è€ƒ configs/zcode-hooks-snippet.json æ·»åŠ hooksé…ç½®
+    echo ÊÖ¶¯ÅäÖÃ²½Öè£º
+    echo   1. ´ò¿ªÎÄ¼þ£º%ZCODE_CONFIG%
+    echo   2. ²Î¿¼ configs/zcode-hooks-snippet.json Ìí¼ÓhooksÅäÖÃ
     echo.
 )
 

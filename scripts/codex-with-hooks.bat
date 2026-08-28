@@ -1,3 +1,3 @@
 @echo off
-REM Codex Е░╞Е┼╗Х└ Ф°╛О╪▄Х┤╙Е┼╗Г╩∙Х©┤ hooks Д©║Д╩╩Фё─Ф÷╔
+REM Codex фТ╤╞╫е╠╬ё╛вт╤╞хф╧Щ hooks пехн╪Л╡И
 codex --dangerously-bypass-hook-trust %*

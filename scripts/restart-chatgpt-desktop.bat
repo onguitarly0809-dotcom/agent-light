@@ -1,29 +1,29 @@
 @echo off
 echo ========================================
-echo   ChatGPT Desktop å®Œå…¨é‡å¯è„šæœ¬
+echo   ChatGPT Desktop ÍêÈ«ÖØÆô½Å±¾
 echo ========================================
 echo.
-echo æ­£åœ¨å…³é—­æ‰€æœ‰ ChatGPT è¿›ç¨‹...
+echo ÕýÔÚ¹Ø±ÕËùÓÐ ChatGPT ½ø³Ì...
 taskkill /F /IM ChatGPT.exe 2>nul
 taskkill /F /IM codex.exe 2>nul
 taskkill /F /IM codex-command-runner*.exe 2>nul
 echo.
-echo ç­‰å¾…è¿›ç¨‹å®Œå…¨ç»“æŸ...
+echo µÈ´ý½ø³ÌÍêÈ«½áÊø...
 timeout /t 3 /nobreak
 echo.
-echo æ£€æŸ¥æ˜¯å¦è¿˜æœ‰æ®‹ç•™è¿›ç¨‹...
+echo ¼ì²éÊÇ·ñ»¹ÓÐ²ÐÁô½ø³Ì...
 tasklist | findstr /I "ChatGPT codex"
 if %ERRORLEVEL% EQU 0 (
     echo.
-    echo âš ï¸  ä»æœ‰æ®‹ç•™è¿›ç¨‹ï¼Œè¯·æ‰‹åŠ¨å…³é—­ ChatGPT Desktop
+    echo [!]  ÈÔÓÐ²ÐÁô½ø³Ì£¬ÇëÊÖ¶¯¹Ø±Õ ChatGPT Desktop
 ) else (
-    echo âœ… æ‰€æœ‰ ChatGPT è¿›ç¨‹å·²å…³é—­
+    echo ¡Ì ËùÓÐ ChatGPT ½ø³ÌÒÑ¹Ø±Õ
 )
 echo.
 echo ========================================
-echo   è¯·æ‰‹åŠ¨é‡æ–°å¯åŠ¨ ChatGPT Desktop
+echo   ÇëÊÖ¶¯ÖØÐÂÆô¶¯ ChatGPT Desktop
 echo ========================================
 echo.
-echo å¯åŠ¨åŽè¯·å‘é€æµ‹è¯•æ¶ˆæ¯éªŒè¯çº¢ç»¿ç¯åŠŸèƒ½
+echo Æô¶¯ºóÇë·¢ËÍ²âÊÔÏûÏ¢ÑéÖ¤ºìÂÌµÆ¹¦ÄÜ
 echo.
 pause
