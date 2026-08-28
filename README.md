@@ -1,216 +1,157 @@
-# Agent Light
+# Agent Light — Desktop Traffic Light for AI Coding Agents
 
 [中文版](README.zh-CN.md)
 
-Turn an Arduino traffic-light module into a real-time status indicator for Claude Code.
+Turn an ESP32-C3 and a toy traffic light into a real-time status indicator for AI coding
+agents (Claude Code / Codex / ZCode). When the agent is thinking, running tools, hitting
+errors, or waiting for your confirmation — the light follows, so you don't have to watch
+the screen.
 
-| State         | Light                |
-|---------------|----------------------|
-| Idle          | Green solid          |
-| Thinking      | Chase (绿→黄→红跑马灯) |
-| Running tools | Red blink            |
-| Tool error    | Red fast blink       |
-| Needs attention | Red/yellow alarm    |
-
-## Prerequisites
-
-- Node.js 18+ (run `npm install` after copying the project — pulls in serialport)
-- An Arduino with a traffic-light LED module connected via USB serial
-- Close the Arduino IDE serial monitor before starting the bridge
-
-> No hardware? Jump to [Software-Only Version](#software-only-version-no-hardware-required).
-
-## 快速安装（在新电脑上 / 分享给朋友）
-
-前提：装好 [Node.js 18+](https://nodejs.org/)，插上已刷固件的 ESP32-C3 红绿灯（原生 USB，Win10/11 免驱）。
-
-1. 把整个项目文件夹拷到对方电脑（git clone / 复制 / zip 均可，放哪个盘都行）
-2. 双击 **`install.bat`**，按提示选择要接入的 AI CLI，脚本会自动：
-   - 安装依赖（serialport）
-   - 写入所选 CLI 的 hooks 配置（自动使用本机路径，与已有 hooks 共存，写入前自动备份）
-   - 配置桥进程开机自启
-   - 启动桥并发送测试命令（灯亮绿色即成功）
-3. 想改配置或诊断问题：`node control.mjs`（控制台：启停桥 / 灯效测试 / 状态诊断）
-
-> ChatGPT Desktop（Codex）注意：hooks 信任状态每次重启应用后会重置，
-> 需在 设置 → 钩子 页面重新信任，这是 Desktop 的机制，无法绕过。
-
-> 要给别人做一盏新灯（而不是直接把你手上这盏给他）？看
-> [ESP32-C3 固件烧录指南](docs/FIRMWARE_GUIDE.md)——硬件清单、接线、
-> Arduino IDE 设置、烧录、验证一站式说明，拿到零件即可照做。
-
-### Hardware
-
-![Hardware shopping list](images/list.jpg)
-
-## Quick Start
-
-### 1. Start the bridge
-
-```sh
-npm run bridge
-```
-
-The bridge auto-detects the Arduino serial port. To specify one manually:
-
-```sh
-npm run bridge -- --serial /dev/cu.usbmodem832101
-```
-
-### 2. Wire up Claude Code hooks
-
-Merge [`claude-settings-snippet.json`](claude-settings-snippet.json) into your `~/.claude/settings.json`. Update the path inside the snippet to match where you cloned this repo.
-
-Hook events used:
-
-- **UserPromptSubmit** — yellow blink (thinking)
-- **PreToolUse** — red blink (running)
-- **PostToolUse** — yellow blink (back to thinking)
-- **Stop** — green solid (idle)
-
-### 3. Test manually
-
-```sh
-npm run light -- idle
-npm run light -- thinking
-npm run light -- running
-npm run light -- Y:blink:700
-npm run light -- R:on
-```
-
-## Command Format
-
-Named states: `idle`, `thinking`, `running` (plus aliases like `green`, `yellow`, `red`, `busy`, `think`).
-
-Direct commands: `{G|Y|R}:{on|off|blink}[:{ms}]` — e.g. `Y:blink:700`, `R:on`, `G:off`.
-
-Blink intervals must be between 50 and 10000 ms.
-
-## Configuration
-
-### Bridge options
-
-| Flag        | Env var                | Default  |
-|-------------|------------------------|----------|
-| `--serial`  | `CLAUDE_LIGHT_SERIAL`  | auto     |
-| `--baud`    | `CLAUDE_LIGHT_BAUD`    | 9600     |
-| `--listen`  | `CLAUDE_LIGHT_PORT`    | 8765     |
-| `--initial` | `CLAUDE_LIGHT_INITIAL` | idle     |
-
-### Override default light patterns
-
-| Env var                    | Example       |
-|----------------------------|---------------|
-| `CLAUDE_LIGHT_THINKING`    | `Y:on`        |
-| `CLAUDE_LIGHT_RUNNING`     | `R:blink:100` |
-| `CLAUDE_LIGHT_THINKING_MS` | `700`         |
-| `CLAUDE_LIGHT_RUNNING_MS`  | `100`         |
-
-## Software-Only Version (No Hardware Required)
-
-If you don't have an Arduino, you can use the built-in desktop GUI traffic light instead. It is built with Rust and [eframe](https://github.com/emilk/egui/tree/master/crates/eframe), rendering a virtual traffic light that floats on top of all windows with a transparent background.
-
-It works by polling the file `/tmp/claude-traffic-light` for the current state (`red`, `yellow`, or `green`).
-
-### Quick Start
-
-```sh
-cargo run
-```
-
-Then configure your Claude Code hooks to write the state to the file:
-
-```sh
-echo "yellow" > /tmp/claude-traffic-light   # thinking
-echo "red"    > /tmp/claude-traffic-light   # running tools
-echo "green"  > /tmp/claude-traffic-light   # idle
-```
-
-The window is always-on-top, borderless, and draggable — just click and drag to reposition it.
-
-## Windows + ESP32-C3 串口版（无蓝牙）
-
-复用本项目（agent-light）的 Claude Code hooks + 命令体系，驱动 **ESP32-C3 SuperMini + 玩具红绿灯挂件**（公共正极灯板）。弃用蓝牙，改用 USB 串口，稳定性和响应速度更好。
-
-### 硬件接线
-
-| 灯位 | 颜色 | ESP32-C3 引脚 |
+| State | Trigger | Light |
 |---|---|---|
-| L1 | 绿灯 | IO2 |
-| L2 | 黄灯 | IO3 |
-| L3 | 红灯 | IO4 |
-
-```
-ESP32 3.3V -> 灯板 + / 原电池正极
-ESP32 IO2  -> 220Ω -> L1 = 绿灯
-ESP32 IO3  -> 220Ω -> L2 = 黄灯
-ESP32 IO4  -> 220Ω -> L3 = 红灯
-```
-
-公共正极：GPIO 低电平 = 灯亮，高电平 = 灯灭（固件已反相，无需手动处理）。
-
-### 1. 烧录固件
-
-1. 用 Arduino IDE 打开 [`firmware/esp32c3-agent-light.ino`](firmware/esp32c3-agent-light.ino)。
-2. 开发板选择 **ESP32C3 Dev Module**，端口选对应的 COM 口。
-3. 关键设置：**USB CDC On Boot = Enabled**（这样 `Serial` 走 USB 虚拟串口，电脑才能看到 COM 口）。
-4. 上传固件。串口监视器选 **115200**，按一下 RST，输入 `thinking` / `running` / `idle` 应能直接控制灯。
-
-### 2. 安装依赖
-
-```sh
-npm install
-```
-
-（仅串口桥 `serial-bridge.mjs` 需要 `serialport` 包；`hook-client.mjs` 仍零依赖。）
-
-### 3. 启动桥
-
-```sh
-npm run bridge
-```
-
-桥会自动检测 ESP32-C3 的 COM 口。检测不准时手动指定：
-
-```sh
-npm run bridge -- --serial COM5
-```
-
-看到 `connected to COMx` 与 `Listening on 127.0.0.1:8765`，且灯变绿（idle）即正常。**桥需保持运行**，关掉灯就不动了（但 Claude Code 不受影响）。
-
-### 4. 手动测试
-
-```sh
-npm run light -- thinking
-npm run light -- running
-npm run light -- idle
-npm run light -- Y:blink:700
-```
-
-### 5. 配置 Claude Code hooks
-
-把 [`configs/claude-settings-snippet.json`](configs/claude-settings-snippet.json) 合并进你的 `~/.claude/settings.json`（Windows 即 `%USERPROFILE%\.claude\settings.json`），并把 `<项目根目录>` 替换为本仓库实际路径（或直接运行 `install.bat` 自动完成）。配置后重启 Claude Code，发一条 prompt，灯应随状态变化：提交时跑马灯（绿→黄→红） → 工具运行黄闪 → 工具出错红快闪 → 需要确认时红黄警灯 → 结束绿常亮。
-
-> hooks 是用户级全局配置，因此**任意 CLI、任意目录下启动的 `claude`** 都会触发灯效。同一台机同时开多个 `claude` 会话会驱动同一盏灯，状态按最后到达的命令跳变。
-
-### 桥选项
-
-| Flag | Env var | Default |
-|---|---|---|
-| `--serial` | `CLAUDE_LIGHT_SERIAL` | auto |
-| `--baud` | `CLAUDE_LIGHT_BAUD` | 115200 |
-| `--listen` | `CLAUDE_LIGHT_PORT` | 8765 |
-| `--initial` | `CLAUDE_LIGHT_INITIAL` | idle |
+| Idle | Session start / turn finished | 🟢 Green solid |
+| Thinking | You submit a prompt | 🟡🟢🔴 Chase (green → yellow → red cycle) |
+| Running tools | Agent invokes a tool | 🟡 Yellow blink (500ms) |
+| Tool error | Tool execution failed | 🔴 Red fast blink |
+| Needs attention | Permission request / needs your input | 🔴🟡 Red-yellow alternating alarm |
 
 ## Architecture
 
 ```
-Claude Code hooks ──> hook-client.mjs ──TCP──> serial-bridge.mjs ──Serial──> Arduino
+Claude Code ─┐
+Codex       ─┤→ hooks invoke hook-client.mjs ──TCP 127.0.0.1:8765──→ serial-bridge.mjs
+ZCode       ─┘                                                              │ USB serial (auto-detected)
+                                                                            ▼
+                                                              ESP32-C3 firmware → traffic light
 ```
 
-- **hook-client.mjs** — fire-and-forget TCP client, sends a single command then exits.
-- **serial-bridge.mjs** — long-running TCP server that forwards commands to the serial port.
-- **lib/commands.mjs** — shared command parsing and validation.
+- The bridge runs under a **restart loop** (auto-respawn on crash) and a **watchdog**
+  (if an active state receives no command for 2 minutes — e.g. you hit Esc, which fires
+  no hook — it falls back to idle).
+- Multiple CLIs / sessions drive the same light; the last command received wins.
+  The activity log tags every command with its source (`[claude]` `[codex]` `[zcode]`).
+
+## Quick Start (on a new PC)
+
+Prerequisite: [Node.js 18+](https://nodejs.org/).
+
+1. Get the project folder (`git clone` or unzip, anywhere on any drive)
+2. Plug in a light with the firmware already flashed (ESP32-C3 native USB, no driver
+   needed on Win10/11)
+3. Double-click **`install.bat`**: installs dependencies → asks which CLIs to hook into
+   (merges with existing hooks, idempotent, backs up before writing) → sets up autostart
+   → starts the bridge → sends a test command (light turns green = success)
+4. Building a new light from parts? Follow the
+   [ESP32-C3 firmware flashing guide](docs/FIRMWARE_GUIDE.md)
+
+> **No hardware yet?** Run `node control.mjs` and use the console to test the command
+> chain; or poke the firmware directly over serial as described in `firmware/`.
+
+> **ChatGPT Desktop (Codex) note**: hook trust state resets every time the app restarts;
+> re-trust them under Settings → Hooks. That's a Desktop mechanism, not a bug here.
+
+## Supported AI CLIs
+
+| | Claude Code | Codex / ChatGPT Desktop | ZCode |
+|---|---|---|---|
+| Config file | `~/.claude/settings.json` | `~/.codex/hooks.json` + `[hooks]` in `config.toml` | `~/.zcode/cli/config.json` |
+| Events | UserPromptSubmit / PreToolUse / PostToolUse / Notification / Stop | adds SessionStart / PermissionRequest | same six as Codex |
+| Error detection | `tool_response.is_error` | `is_error` or non-zero `exit_code` | same as Claude |
+| Setup tool | `install.bat` | `install.bat` (Desktop needs manual trust) | `install.bat` or `scripts/setup-zcode-hooks.bat` |
+| Manual template | `configs/claude-settings-snippet.json` | `configs/codex-hooks-snippet.json` | `configs/zcode-hooks-snippet.json` |
+
+Replace the `<项目根目录>` placeholder in the templates with your actual project path
+(`install.bat` does this automatically).
+
+## Light Commands & Customization
+
+Send commands straight to the bridge for testing (while it listens on 8765):
+
+```sh
+npm run light -- idle      # green solid
+npm run light -- chase     # chase effect
+npm run light -- Y:blink:700
+```
+
+**Named states**: `idle` / `thinking` / `running` (aliases: `green` `yellow` `red`
+`think` `busy` `execute` `executing`), plus effects `chase` `error` `alarm`.
+
+**Direct commands**: `G:off`, `R:on`, `Y:blink:700` — color G/Y/R, mode on/off/blink,
+blink period 50–10000 ms.
+
+**Environment overrides** (honored by both bridge and hook-client):
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `CLAUDE_LIGHT_HOST` / `CLAUDE_LIGHT_PORT` | 127.0.0.1 / 8765 | Bridge listen address |
+| `CLAUDE_LIGHT_SERIAL` / `CLAUDE_LIGHT_BAUD` | auto / 115200 | Serial port & baud (auto prefers Espressif VID 303a) |
+| `CLAUDE_LIGHT_WATCHDOG_MS` | 120000 | Watchdog timeout, 0 disables |
+| `CLAUDE_LIGHT_IDLE/THINKING/RUNNING` | — | Full command override per state, e.g. `CLAUDE_LIGHT_RUNNING=R:on` |
+| `CLAUDE_LIGHT_THINKING_MS/RUNNING_MS` | — | Blink period only |
+
+Bridge CLI flags: `node serial-bridge.mjs --serial COM3 --baud 115200 --listen 8765 --initial idle`.
+
+## Daily Use
+
+- **Console**: `node control.mjs` (or `npm run control`) — start/stop the bridge, test
+  light effects, run diagnostics (serial / process / port / log, step by step), manage
+  autostart.
+- **Stop the bridge**: double-click `stop-bridge.bat` (required before reflashing —
+  frees the serial port).
+- **Logs**: `bridge.log` (every command the bridge forwarded) and
+  `agent-light-activity.log` (hook activity tagged by source CLI).
+- **Monitor one CLI**: `scripts/monitor-zcode-activity.bat` /
+  `scripts/monitor-codex-desktop-activity.bat`.
+- **Diagnose hook firing**: `tools/test-zcode-hooks.mjs` / `tools/test-codex-hooks.mjs`.
+
+## Project Layout
+
+```
+├── install.bat / install.mjs        # One-click installer (deps + hooks + autostart + self-test)
+├── hook-client.mjs                  # Hook entry point: normalize command → TCP → activity log
+├── lib/
+│   ├── commands.mjs                 # Command parsing/validation/aliases/env overrides (unit-tested)
+│   ├── post-tool.mjs / -codex / -hermes   # PostToolUse error detection per CLI family
+│   └── notification.mjs             # Notification hook: "needs you" vs "idle waiting"
+├── serial-bridge.mjs                # TCP→serial bridge: auto port detect + watchdog + exit-on-disconnect
+├── control.mjs                      # Desktop console (start/stop, effects, diagnostics, autostart)
+├── bridge-autostart.bat / start-bridge-hidden.vbs / stop-bridge.bat   # Bridge runtime chain (portable, %~dp0)
+├── firmware/
+│   ├── esp32c3-agent-light/         # Main firmware: ESP32-C3 + common-anode board (PWM, 6 modes)
+│   └── agent-light.ino              # Legacy: classic Arduino wiring (pins 5/6/7, 9600, feature subset)
+├── configs/                         # Hook config templates for the three CLIs
+├── scripts/                         # Utility scripts (monitors / launchers / upload)
+├── tools/                           # Hook-firing diagnostics
+├── docs/                            # Firmware guide, migration guide, ZCode setup, archives
+└── test/                            # node --test unit tests
+```
+
+## Firmware
+
+The main firmware is `firmware/esp32c3-agent-light/esp32c3-agent-light.ino` (USB CDC
+virtual serial, common-anode inverted PWM, chase/fast-blink/alarm effects, tunable
+brightness constants). Flashing steps, wiring table, and Arduino IDE settings are in the
+**[firmware flashing guide](docs/FIRMWARE_GUIDE.md)**.
+
+`firmware/agent-light.ino` is a legacy build (classic Arduino boards, common cathode,
+9600 baud, no named effects) kept for old hardware — pass `--baud 9600` to the bridge
+when using it.
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| Light never lights up / never changes | `node control.mjs` → menu 4 diagnostics; follow the step-by-step hints |
+| Bridge won't start, serial errors in log | Serial port busy (Arduino serial monitor / other apps) or hardware unplugged |
+| One CLI doesn't trigger the light | Run its `tools/test-*.mjs`; for Codex Desktop check hook trust |
+| Want to reflash the firmware | Run `stop-bridge.bat` first to free the serial port, restart after flashing |
+
+## Development
+
+```sh
+npm install    # installs serialport
+npm test       # command-normalization unit tests
+```
 
 ## License
 

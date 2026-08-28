@@ -101,9 +101,6 @@ agent-light-main/
 ├── src/                              # Rust 源代码
 │   └── main.rs                       # 虚拟交通灯主程序
 │
-├── images/                           # 资源文件
-│   └── list.jpg                      # 硬件购买清单图示
-│
 ├── test/                             # 测试文件
 │   ├── commands.test.mjs             # 命令测试
 │   └── .keep                         # 目录保留文件
